@@ -3,47 +3,54 @@
  */
 package application;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-
 /**
  * @author remjamd
  *
  */
 
+import java.io.IOException;
+import java.net.URL;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;  
+import org.jsoup.nodes.Element;  
+import org.jsoup.select.Elements;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tab;
+import javafx.beans.property.SimpleStringProperty;
 
 public class AppController implements Initializable {
 
-	
-	
 	@FXML
-    private TableView<?> dataTable;
+    private TableView<TableWeapons> dataTable;
 
     @FXML
-    private TableColumn<?, ?> columnName;
+    private TableColumn<TableWeapons, String> columnName;
+    
+    @FXML
+    private TableColumn<TableWeapons, String> columnAttack;
 
     @FXML
-    private TableColumn<?, ?> columnElement;
+    private TableColumn<TableWeapons, String> columnElement;
 
     @FXML
-    private TableColumn<?, ?> columnAffinity;
+    private TableColumn<TableWeapons, String> columnAffinity;
 
     @FXML
-    private TableColumn<?, ?> columnSlots;
+    private TableColumn<TableWeapons, String> columnSlots;
 
     @FXML
-    private TableColumn<?, ?> columnRarity;
+    private TableColumn<TableWeapons, String> columnRarity;
 
     @FXML
     private ComboBox<String> WeaponBox;
@@ -61,20 +68,48 @@ public class AppController implements Initializable {
     private ComboBox<String> SlotsBox;
 
     @FXML
-    private Button button;
+    private Button searchButton;
 
     @FXML
-    void clickMe(ActionEvent event) {
+    void clicked(ActionEvent event) throws IOException{
 
-    	String selectedW = WeaponBox.getValue();
-    	System.out.println(selectedW);
-    	String selectedE = ElementBox.getValue();
-    	System.out.println(selectedE);
+    	
+    	//Initialize columns
+    	columnName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+    	columnAttack.setCellValueFactory(cellData -> cellData.getValue().attackProperty());
+    	columnElement.setCellValueFactory(cellData -> cellData.getValue().elementProperty());
+    	columnAffinity.setCellValueFactory(cellData -> cellData.getValue().affinityProperty());
+    	columnSlots.setCellValueFactory(cellData -> cellData.getValue().slotsProperty());
+    	columnRarity.setCellValueFactory(cellData -> cellData.getValue().rarityProperty());
+    	
+    	ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
+    	
+    	//String selectedW = WeaponBox.getValue();
+    	//System.out.println(selectedW);
+    	
+    	Document doc = Jsoup.connect("https://mhworld.kiranico.com/great-sword").get();  
+        Elements links = doc.select("a[href]");  
+        for (Element link : links) {  
+            //System.out.println("\nlink : " + link.attr("href"));
+        	if (link.attr("href").contains("weapon"))
+        	{
+        		String wepURL = (link.attr("href"));
+        		Document wepDoc = Jsoup.connect(wepURL).get();
+        		//order: attack, affinity, slots, element, sharpness, rare
+        		Elements stats = wepDoc.getElementsByClass("lead");
+        		int total = stats.length();
+        		sample.add(new TableWeapons(link.text(),"100","200 water","+30%","0","7"));
+        	}
+            
+        }  
+        dataTable.setItems(sample);
     }
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		
+		
 		
 		ObservableList<String> options1 = 
     		    FXCollections.observableArrayList(
@@ -96,6 +131,7 @@ public class AppController implements Initializable {
     	
 		ObservableList<String> options2 = 
     		    FXCollections.observableArrayList(
+    		    		"No Element",
     		    		"Fire",
     		    		"Water",
     		    		"Thunder",
@@ -107,10 +143,10 @@ public class AppController implements Initializable {
     		    		"Blast");
 		
 		ObservableList<String> options3 = 
-    		    FXCollections.observableArrayList("1","2","3","4","5","6","7","8");
+    		    FXCollections.observableArrayList(" ","1","2","3","4","5","6","7","8");
 		
 		ObservableList<String> options4 = 
-    		    FXCollections.observableArrayList("+","-","no affinity");
+    		    FXCollections.observableArrayList("No Affinity","+","-");
 		
 		ObservableList<String> options5 = 
     		    FXCollections.observableArrayList("0","1","2","3");
@@ -120,6 +156,8 @@ public class AppController implements Initializable {
     	RarityBox.getItems().addAll(options3);
     	AffinityBox.getItems().addAll(options4);
     	SlotsBox.getItems().addAll(options5);
+    	
+    	
 	}
     
     
