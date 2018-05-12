@@ -5,101 +5,101 @@ import javafx.beans.property.StringProperty;
 
 public class TableWeapons {
 
-	private final SimpleStringProperty name;
-	private final SimpleStringProperty attack;
-	private final SimpleStringProperty element;
-	private final SimpleStringProperty affinity;
-	private final SimpleStringProperty slots;
-	private final SimpleStringProperty rarity;
+	private final SimpleStringProperty colName;
+	private final SimpleStringProperty colAttack;
+	private final SimpleStringProperty colElement;
+	private final SimpleStringProperty colAffinity;
+	private final SimpleStringProperty colSlots;
+	private final SimpleStringProperty colRarity;
 	
 	public TableWeapons(String name, String attack, String element, String affinity, String slots, String rarity) {
 		
-		this.name = new SimpleStringProperty(name);
-		this.attack = new SimpleStringProperty(attack);
-		this.element = new SimpleStringProperty(element);
-		this.affinity = new SimpleStringProperty(affinity);
-		this.slots = new SimpleStringProperty(slots);
-		this.rarity = new SimpleStringProperty(rarity);
+		this.colName = new SimpleStringProperty(name);
+		this.colAttack = new SimpleStringProperty(attack);
+		this.colElement = new SimpleStringProperty(element);
+		this.colAffinity = new SimpleStringProperty(affinity);
+		this.colSlots = new SimpleStringProperty(slots);
+		this.colRarity = new SimpleStringProperty(rarity);
 	}
 
 	
 	//name
-	public void setName(String weaponName) {
-		name.set(weaponName);
+	public void setColName(String weaponName) {
+		colName.set(weaponName);
 	}
 	
-	public String getName() {
-		return name.get();
+	public String getColName() {
+		return colName.get();
 	}
 
 	public StringProperty nameProperty() {
 		// TODO Auto-generated method stub
-		return name;
+		return colName;
 	}
 	
 	//attack
-	public void setAttack(String weaponAttack) {
-		attack.set(weaponAttack);
+	public void setColAttack(String weaponAttack) {
+		colAttack.set(weaponAttack);
 	}
 	
-	public String getAttack() {
-		return attack.get();
+	public String getColAttack() {
+		return colAttack.get();
 	}
 	
 	public StringProperty attackProperty() {
 		// TODO Auto-generated method stub
-		return attack;
+		return colAttack;
 	}
 	
 	//element
-	public void setElement(String weaponElement) {
-		element.set(weaponElement);
+	public void setColElement(String weaponElement) {
+		colElement.set(weaponElement);
 	}
 	
-	public String getElement() {
-		return element.get();
+	public String getColElement() {
+		return colElement.get();
 	}
 	
 	public StringProperty elementProperty() {
-		return element;
+		return colElement;
 	}
 
 	//affinity
-	public void setAffinity(String weaponAffinity) {
-		affinity.set(weaponAffinity);
+	public void setColAffinity(String weaponAffinity) {
+		colAffinity.set(weaponAffinity);
 	}
 	
-	public String getAffinity() {
-		return affinity.get();
+	public String getColAffinity() {
+		return colAffinity.get();
 	}
 	
 	public StringProperty affinityProperty() {
-		return affinity;
+		return colAffinity;
 	}
 	
 	//slots
-	public void setSolts(String weaponSlots) {
-		slots.set(weaponSlots);
+	public void setColSolts(String weaponSlots) {
+		colSlots.set(weaponSlots);
 	}
 	
 	public String getSlots() {
-		return slots.get();
+		return colSlots.get();
 	}
 	
 	public StringProperty slotsProperty() {
-		return slots;
+		return colSlots;
 	}
 	
 	//Rarity
-	public void setRarity(String weaponRarity) {
-		rarity.set(weaponRarity);
+	public void setColRarity(String weaponRarity) {
+		colRarity.set(weaponRarity);
 	}
-	public String getRarity() {
-		return rarity.get();
+	public String getColRarity() {
+		return colRarity.get();
 	}
 	
 	public StringProperty rarityProperty() {
-		return rarity;
+		return colRarity;
 	}
 
 

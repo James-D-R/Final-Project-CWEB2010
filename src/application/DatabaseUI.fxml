@@ -15,7 +15,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="919.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="919.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="searchPane" text="Search">
             <content>
@@ -71,6 +71,11 @@
                         <Label layoutX="16.0" layoutY="356.0" text="Rarity:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="infoLabel" layoutX="40.0" layoutY="494.0" prefHeight="21.0" prefWidth="148.0" text="Please wait..." textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
                      </children>
