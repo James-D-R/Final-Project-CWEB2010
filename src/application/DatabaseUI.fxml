@@ -28,7 +28,7 @@
                            </image>
                         </ImageView>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" height="546.0" layoutX="529.0" stroke="BLACK" strokeType="INSIDE" width="390.0" />
-                        <TableView fx:id="dataTable" layoutX="206.0" layoutY="68.0" prefHeight="459.0" prefWidth="692.0">
+                        <TableView fx:id="dataTable" layoutX="206.0" layoutY="68.0" prefHeight="445.0" prefWidth="692.0">
                           <columns>
                             <TableColumn fx:id="columnName" prefWidth="253.0" text="Name" />
                             <TableColumn fx:id="columnAttack" minWidth="0.0" prefWidth="85.0" text="Attack" />
@@ -38,10 +38,10 @@
                               <TableColumn fx:id="columnRarity" prefWidth="66.0" text="Rarity" />
                           </columns>
                         </TableView>
-                        <ComboBox fx:id="WeaponBox" layoutX="14.0" layoutY="126.0" prefHeight="31.0" prefWidth="175.0" promptText="Great Sword" />
-                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="209.0" prefHeight="31.0" prefWidth="175.0" promptText="n/a" />
+                        <ComboBox fx:id="WeaponBox" layoutX="14.0" layoutY="126.0" prefHeight="31.0" prefWidth="175.0" />
+                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="209.0" prefHeight="31.0" prefWidth="175.0" />
                         <Button fx:id="searchButton" layoutX="69.0" layoutY="298.0" mnemonicParsing="false" onAction="#clicked" text="Search" />
-                        <Label layoutX="206.0" layoutY="22.0" prefHeight="35.0" prefWidth="507.0" text="Monster Hunter World: Weapons Database" textFill="WHITE">
+                        <Label layoutX="206.0" layoutY="14.0" prefHeight="35.0" prefWidth="507.0" text="Monster Hunter World: Weapons Database" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
@@ -56,7 +56,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="infoLabel" layoutX="40.0" layoutY="345.0" prefHeight="21.0" prefWidth="148.0" text="Please wait..." textFill="WHITE">
+                        <Label fx:id="infoLabel" layoutX="29.0" layoutY="513.0" prefHeight="21.0" prefWidth="689.0" text="Please wait..." textFill="RED">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -136,7 +136,7 @@
                               <Font name="System Bold Italic" size="19.0" />
                            </font>
                         </Label>
-                        <TableView layoutX="306.0" layoutY="188.0" prefHeight="313.0" prefWidth="193.0">
+                        <TableView fx:id="materialTable" layoutX="306.0" layoutY="188.0" prefHeight="313.0" prefWidth="193.0">
                           <columns>
                             <TableColumn fx:id="columnMaterial" prefWidth="187.0" text="Required Material" />
                           </columns>
@@ -154,6 +154,16 @@
                         <Label fx:id="typeLabel" layoutX="18.0" layoutY="190.0" text="Weapon Type" textFill="WHITE">
                            <font>
                               <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="specialLabel" layoutX="19.0" layoutY="457.0" text="Special:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="errorLabel" layoutX="338.0" layoutY="82.0" text="Error" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
                      </children></AnchorPane>

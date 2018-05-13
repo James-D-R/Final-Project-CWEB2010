@@ -116,20 +116,32 @@ public class AppController implements Initializable {
     
     @FXML
     private Label typeLabel;
+    
+    @FXML
+    private Label specialLabel;
+    
+    @FXML
+    private Label errorLabel;
+    
+    @FXML
+    private TableView<TableMaterials> materialTable;
 
     @FXML
-    private TableColumn<?, ?> columnMaterial;
+    private TableColumn<TableMaterials, String> columnMaterial;
 
     @FXML
     void calculateAtk(ActionEvent event) {
 
     }
     
-    
+    /**Action Event occurs when the search button on the 
+     * weapon details tab is clicked */
     @FXML
-    void nameSearch(ActionEvent event) {
+    void nameSearch(ActionEvent event) throws IOException {
 
+    	errorLabel.setVisible(false);
     	setLabels();
+    	tableSetup();
     }
     
 
@@ -139,18 +151,8 @@ public class AppController implements Initializable {
     @FXML
     void clicked(ActionEvent event) throws IOException, SQLException{
     	
-    	//Initialize columns
-    	columnName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-    	columnAttack.setCellValueFactory(cellData -> cellData.getValue().attackProperty());
-    	columnElement.setCellValueFactory(cellData -> cellData.getValue().elementProperty());
-    	columnAffinity.setCellValueFactory(cellData -> cellData.getValue().affinityProperty());
-    	columnSlots.setCellValueFactory(cellData -> cellData.getValue().slotsProperty());
-    	columnRarity.setCellValueFactory(cellData -> cellData.getValue().rarityProperty());
-    	
-    	ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
-    	sample = searchDatabase();
-    	
-    	dataTable.setItems(sample);
+    	infoLabel.setVisible(false);
+    	searchDatabase();
     }
     
 
@@ -161,6 +163,7 @@ public class AppController implements Initializable {
 		
 		
 		infoLabel.setVisible(false);
+		errorLabel.setVisible(false);
 		augmentBox1.setVisible(false);
 		augmentBox2.setVisible(false);
 		augmentBox3.setVisible(false);
@@ -207,8 +210,8 @@ public class AppController implements Initializable {
     	augmentBox3.getItems().addAll(options3);
     	
     	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-    	//un-comment the following section if database needs to be re-created
-    	//CAUTION!!! This may take 10+ minutes to complete.
+    	/**un-comment the following section if database needs to be re-created
+    		CAUTION!!! This may take 10+ minutes to complete.*/
     	/*try {
     		
     	try {
@@ -235,6 +238,9 @@ public class AppController implements Initializable {
 	
 	
 	//Methods
+	/** Method to find the number of slots each weapon
+	 * has by scraping the site
+	 * @param wepDoc The url for the webpage of the weapon currently being scraped*/
 	public String findSlots(Document wepDoc) 
 	{
 		Elements slots3 = wepDoc.getElementsByClass("zmdi zmdi-n-3-square");
@@ -271,11 +277,17 @@ public class AppController implements Initializable {
 		return check;
     }
     
+    /**Creates and stores all the scraped weapon data to objects using the 
+     * Weapon class and returns them to be stored in the database
+     * @return ArrayList of the stored objects */
     public ArrayList<Weapon> createObjects() throws IOException{
 
     	ArrayList<Weapon> weapons = new ArrayList<Weapon>(); 
     	String[] choices = {"great-sword","long-sword","sword","dual-blades","hammer","hunting-horn","lance","gunlance",
     							"switch-axe","charge-blade","insect-glaive","light-bowgun", "heavy-bowgun", "bow"};
+    	
+    	try {
+    		
     	
     	for(int i = 0; i < choices.length; i++) {
     		
@@ -422,16 +434,25 @@ public class AppController implements Initializable {
 	        	}
 	        }  
     	}
+    	}
+    	catch (Exception e) {
+    		System.out.println("Failed to Connect. Please re-load the program and try again.");
+    		infoLabel.setVisible(true);
+    		infoLabel.setText("Connection Error. Please close and re-load the program");
+    	}
     	return weapons;
     }
     
     
-    
+    /**Creates an online database with db4free.net
+     * @param the arraylist created from the createObjects method */
     public void createDatabase(ArrayList<Weapon> weapons) throws SQLException{
     	
     	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
     	String USERNAME = "jdremer";
     	String PASSWORD = "testpassword";
+    	try {
+    		
     	
     	try {
 			Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
@@ -484,13 +505,31 @@ public class AppController implements Initializable {
     	} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();}
+    	}
+    	catch(Exception e) {
+    		System.out.println("Failed to Connect. Please re-load the program and try again.");
+    		infoLabel.setVisible(true);
+    		infoLabel.setText("Connection Error. Please close and re-load the program");
+    		
+    	}
     }
     
     
+    /**searches through the database based on criteria set by the user.
+     * after searching, data is written to the table 
+     * No parameters or return*/
     
-    public ObservableList<TableWeapons> searchDatabase() throws SQLException{
+    public void searchDatabase() throws SQLException{
     	
     	ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
+    	
+    	//Initialize columns
+    	columnName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+    	columnAttack.setCellValueFactory(cellData -> cellData.getValue().attackProperty());
+    	columnElement.setCellValueFactory(cellData -> cellData.getValue().elementProperty());
+    	columnAffinity.setCellValueFactory(cellData -> cellData.getValue().affinityProperty());
+    	columnSlots.setCellValueFactory(cellData -> cellData.getValue().slotsProperty());
+    	columnRarity.setCellValueFactory(cellData -> cellData.getValue().rarityProperty());
     	
     	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
     	String USERNAME = "jdremer";
@@ -500,6 +539,7 @@ public class AppController implements Initializable {
     		Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
     		Statement stmt = MyConn.createStatement();
     		
+    		//Gets weapon type from combo box for the following query
     		String wepChoice = WeaponBox.getValue();
     		String elmChoice = ElementBox.getValue();
     		wepChoice = wepChoice.toLowerCase();
@@ -517,6 +557,7 @@ public class AppController implements Initializable {
 				String pickedSlots = rs.getString("slots");
 				String pickedRare = rs.getString("rarity");
 				
+				//Sort data by inputed Element
 				if(pickedElm.contains(elmChoice)) 
 				{
 					sample.add(new TableWeapons(pickedWep, pickedAtk, pickedElm, pickedAffn, pickedSlots, pickedRare));
@@ -528,20 +569,27 @@ public class AppController implements Initializable {
 			}
 			
 			rs.close();
+			dataTable.setItems(sample);
     	}
     	catch(SQLException e){
     		e.printStackTrace();
     	}
     	}
     	catch(Exception e) {
-    		System.out.println("Connection error has occured. Please wait and try again.");
+    		/**Print error message if query fails. Error will occur if event occurs with default values 
+    		 * in combo box*/
+    		System.out.println("An error has occured. Please check your connection and\n ensure combo boxes are not blank");
+    		infoLabel.setVisible(true);
+    		infoLabel.setText("Error. Please select a weapon type/element and check your connection.");
     	}
-    	
-    	return sample;
     }
     
+    /**Sets the labels on the weapon details page to the correct strings
+     * based on the name entered by the user
+     * No params or return */
     public void setLabels(){
     	
+    	//re-hide boxes and button
     	infoLabel.setVisible(false);
 		augmentBox1.setVisible(false);
 		augmentBox2.setVisible(false);
@@ -559,11 +607,13 @@ public class AppController implements Initializable {
     		Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
     		Statement stmt = MyConn.createStatement();
     		
+    		//Looking for user inputed weapon name
     		String select = "SELECT wepType, name, attack, element, affinity, slots, rarity FROM WeaponsTable WHERE name = '" + enteredName + "'" ;
 			ResultSet rs = stmt.executeQuery(select);
 			
 			while (rs.next()) {
 				
+				//Adjust labels to read correct information
 				String pickedType = rs.getString("wepType");
 				String pickedWep = rs.getString("name");
 				String pickedAtk = rs.getString("attack");
@@ -583,6 +633,7 @@ public class AppController implements Initializable {
 				slotsLabel.setText("Slots: " + pickedSlots);
 				rarityLabel.setText("Rarity: " + pickedRare);
 				
+				//Show combo boxes if rarity is 6, 7, or 8
 				if (pickedRare.equals("6")) 
 				{
 					augmentBox1.setVisible(true);
@@ -612,8 +663,56 @@ public class AppController implements Initializable {
     	catch(SQLException e){
     		e.printStackTrace();
     	}
+    	
+  
+    }
+    
+    /**Sets up the materials table in the weapon details tab
+     * No params or return */
+    public void tableSetup() throws IOException {
+    	
+    	//Initialize Column
+    	columnMaterial.setCellValueFactory(cellData -> cellData.getValue().materialProperty());
+    	ObservableList<TableMaterials> sample2 = FXCollections.observableArrayList();
+    	
+    	String name = entryBox.getText();
+    	name = name.replace('"', '!');
+    	name = name.replace("!", "'");
+    	name = name.replace("'","");
+    	name = name.replace(' ', '-');
+    	name = name.toLowerCase();
+    	
+    	String url = "https://mhworld.kiranico.com/weapon/" + name;
+    	try {
+    		
+    	Document doc = Jsoup.connect(url).get();
+    	Elements table = doc.getElementsByClass("table table-sm");
+    	Elements mat = table.select("tr");
+    	
+
+    		for (int x = 0; x < mat.size(); x++) 
+        	{
+        		String material = mat.get(x).text();
+        		sample2.add(new TableMaterials(material));
+        	}
+    	materialTable.setItems(sample2);
+    	
+    	Elements special = doc.getElementsByClass("lead");
+    	int classSize = special.size();
+    	int a = classSize - 2;
+    	String value = special.get(a).text();
+    	specialLabel.setText("Special: " + value);
+    	}	
+    	// Throws error message in window if weapon is not found
+    		catch(Exception e) {
+    			System.out.println("Unable to find weapon. Check spelling and try again.");
+    			errorLabel.setVisible(true);
+    			errorLabel.setText("Error. Weapon Not Found.");
+    		}
     }
     }
+    
+    
 
 
 
