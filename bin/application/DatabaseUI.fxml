@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -38,7 +39,7 @@
                           </columns>
                         </TableView>
                         <ComboBox fx:id="WeaponBox" layoutX="14.0" layoutY="126.0" prefHeight="31.0" prefWidth="175.0" promptText="Great Sword" />
-                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="209.0" prefHeight="31.0" prefWidth="175.0" promptText="Element" />
+                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="209.0" prefHeight="31.0" prefWidth="175.0" promptText="n/a" />
                         <Button fx:id="searchButton" layoutX="69.0" layoutY="298.0" mnemonicParsing="false" onAction="#clicked" text="Search" />
                         <Label layoutX="206.0" layoutY="22.0" prefHeight="35.0" prefWidth="507.0" text="Monster Hunter World: Weapons Database" textFill="WHITE">
                            <font>
@@ -66,7 +67,96 @@
           </Tab>
           <Tab fx:id="detailPane" text="Weapon Details">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="547.0" fitWidth="555.0" layoutX="372.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../bin/application/Logo.jpg" />
+                           </image>
+                        </ImageView>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="550.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="373.0" />
+                        <TextField fx:id="entryBox" layoutX="31.0" layoutY="77.0" />
+                        <Label layoutX="14.0" layoutY="40.0" text="Weapon Search by Name:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="17.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="nameSearchButton" layoutX="241.0" layoutY="77.0" mnemonicParsing="false" onAction="#nameSearch" text="Search" />
+                        <Label layoutX="670.0" layoutY="32.0" text="Augmentation" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="29.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="augmentBox1" layoutX="709.0" layoutY="93.0" prefWidth="150.0" promptText="Attack" />
+                        <ComboBox fx:id="augmentBox2" layoutX="709.0" layoutY="159.0" prefWidth="150.0" promptText="Attack" />
+                        <ComboBox fx:id="augmentBox3" layoutX="709.0" layoutY="223.0" prefWidth="150.0" promptText="Attack" />
+                        <Button fx:id="calcButton" layoutX="778.0" layoutY="287.0" mnemonicParsing="false" onAction="#calculateAtk" text="Calculate" />
+                        <Label layoutX="620.0" layoutY="344.0" text="Power After Augmentation:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="attackLabel2" layoutX="620.0" layoutY="393.0" text="Attack:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="affinityLabel2" layoutX="620.0" layoutY="435.0" text="Affinity: " textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="29.0" layoutY="145.0" text="Base Stats" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="21.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="attackLabel1" layoutX="17.0" layoutY="266.0" text="Attack:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="affinityLabel1" layoutX="19.0" layoutY="344.0" text="Affinity: " textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="elementLabel" layoutX="17.0" layoutY="304.0" text="Element:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="slotsLabel" layoutX="16.0" layoutY="379.0" text="No. Slots:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="rarityLabel" layoutX="19.0" layoutY="421.0" text="Rarity:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <TableView layoutX="306.0" layoutY="188.0" prefHeight="313.0" prefWidth="193.0">
+                          <columns>
+                            <TableColumn fx:id="columnMaterial" prefWidth="187.0" text="Required Material" />
+                          </columns>
+                        </TableView>
+                        <Label layoutX="306.0" layoutY="143.0" text="Crafting Materials" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="23.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nameLabel" layoutX="17.0" layoutY="225.0" text="Name:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="typeLabel" layoutX="18.0" layoutY="190.0" text="Weapon Type" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="19.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
             </content>
           </Tab>
         </tabs>

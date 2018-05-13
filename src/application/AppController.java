@@ -19,7 +19,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +30,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tab;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -69,6 +69,70 @@ public class AppController implements Initializable {
     @FXML
     private Button searchButton;
 
+    @FXML
+    private Tab detailPane;
+
+    @FXML
+    private TextField entryBox;
+
+    @FXML
+    private Button nameSearchButton;
+
+    @FXML
+    private ComboBox<String> augmentBox1;
+
+    @FXML
+    private ComboBox<String> augmentBox2;
+
+    @FXML
+    private ComboBox<String> augmentBox3;
+
+    @FXML
+    private Button calcButton;
+
+    @FXML
+    private Label attackLabel2;
+
+    @FXML
+    private Label affinityLabel2;
+
+    @FXML
+    private Label attackLabel1;
+
+    @FXML
+    private Label affinityLabel1;
+
+    @FXML
+    private Label elementLabel;
+
+    @FXML
+    private Label slotsLabel;
+
+    @FXML
+    private Label rarityLabel;
+    
+    @FXML
+    private Label nameLabel;
+    
+    @FXML
+    private Label typeLabel;
+
+    @FXML
+    private TableColumn<?, ?> columnMaterial;
+
+    @FXML
+    void calculateAtk(ActionEvent event) {
+
+    }
+    
+    
+    @FXML
+    void nameSearch(ActionEvent event) {
+
+    	setLabels();
+    }
+    
+
     
     
     //Action Event to fill tables
@@ -88,6 +152,7 @@ public class AppController implements Initializable {
     	
     	dataTable.setItems(sample);
     }
+    
 
     //Initialize window
 	@Override
@@ -96,6 +161,10 @@ public class AppController implements Initializable {
 		
 		
 		infoLabel.setVisible(false);
+		augmentBox1.setVisible(false);
+		augmentBox2.setVisible(false);
+		augmentBox3.setVisible(false);
+		calcButton.setVisible(false);
 		
 		ObservableList<String> options1 = 
     		    FXCollections.observableArrayList(
@@ -128,18 +197,26 @@ public class AppController implements Initializable {
     		    		"Sleep",
     		    		"Blast");
 		
+		ObservableList<String> options3 = 
+    		    FXCollections.observableArrayList("Attack", "Affinity");
 		
     	WeaponBox.getItems().addAll(options1);
     	ElementBox.getItems().addAll(options2);
-    	
+    	augmentBox1.getItems().addAll(options3);
+    	augmentBox2.getItems().addAll(options3);
+    	augmentBox3.getItems().addAll(options3);
     	
     	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+    	//un-comment the following section if database needs to be re-created
+    	//CAUTION!!! This may take 10+ minutes to complete.
+    	/*try {
+    		
     	try {
 			weapons = createObjects();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+			}
     	//System.out.println(weapons.get(1).name);
     	
     	//Insert scraped information to database
@@ -148,7 +225,11 @@ public class AppController implements Initializable {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+			}
+    	}
+    	catch (Exception i) {
+    		System.out.println("Connectivity error. Please try loading again.");
+    	}*/
 	}
 
 	
@@ -300,7 +381,7 @@ public class AppController implements Initializable {
 	        			}
 	        		}
 	        		
-	        		if (selectedWep.equals("great-sword") || selectedWep.equals("long-sword") || selectedWep.equals("sword") || selectedWep.equals("dual-blades") || selectedWep.equals("hammer") || selectedWep.equals("lance"))
+	        		if (selectedWep.equals("great-sword") || selectedWep.equals("long-sword") || selectedWep.equals("sword") || selectedWep.equals("dual-blades") || selectedWep.equals("hammer") || selectedWep.equals("lance") || selectedWep.equals("bow"))
 	        		{
 	        			if(total == 3) 
 	            		{
@@ -357,10 +438,15 @@ public class AppController implements Initializable {
 			System.out.println("Connected");
 			
 			//delete previous table
-			Statement drop_stmt = MyConn.createStatement();
-			String drop = "DROP TABLE WeaponsTable";
-			drop_stmt.executeUpdate(drop);
-			System.out.println("Deleted table in given database");
+			try {
+				Statement drop_stmt = MyConn.createStatement();
+				String drop = "DROP TABLE WeaponsTable";
+				drop_stmt.executeUpdate(drop);
+				System.out.println("Deleted table in given database");
+			}
+			catch(Exception i) {
+				System.out.println("Could not find table to delete.");
+			}
 			
 			//create new table
 			Statement stmt = MyConn.createStatement();
@@ -409,12 +495,13 @@ public class AppController implements Initializable {
     	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
     	String USERNAME = "jdremer";
     	String PASSWORD = "testpassword";
-    	
+    	try {
     	try {
     		Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
     		Statement stmt = MyConn.createStatement();
     		
     		String wepChoice = WeaponBox.getValue();
+    		String elmChoice = ElementBox.getValue();
     		wepChoice = wepChoice.toLowerCase();
     		wepChoice = wepChoice.replace(' ', '-');
     		
@@ -430,7 +517,14 @@ public class AppController implements Initializable {
 				String pickedSlots = rs.getString("slots");
 				String pickedRare = rs.getString("rarity");
 				
-				sample.add(new TableWeapons(pickedWep, pickedAtk, pickedElm, pickedAffn, pickedSlots, pickedRare));
+				if(pickedElm.contains(elmChoice)) 
+				{
+					sample.add(new TableWeapons(pickedWep, pickedAtk, pickedElm, pickedAffn, pickedSlots, pickedRare));
+				}
+				if(elmChoice.equals("n/a")) 
+				{
+					sample.add(new TableWeapons(pickedWep, pickedAtk, pickedElm, pickedAffn, pickedSlots, pickedRare));
+				}
 			}
 			
 			rs.close();
@@ -438,9 +532,86 @@ public class AppController implements Initializable {
     	catch(SQLException e){
     		e.printStackTrace();
     	}
-    	
+    	}
+    	catch(Exception e) {
+    		System.out.println("Connection error has occured. Please wait and try again.");
+    	}
     	
     	return sample;
+    }
+    
+    public void setLabels(){
+    	
+    	infoLabel.setVisible(false);
+		augmentBox1.setVisible(false);
+		augmentBox2.setVisible(false);
+		augmentBox3.setVisible(false);
+		calcButton.setVisible(false);
+    	
+    	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
+    	String USERNAME = "jdremer";
+    	String PASSWORD = "testpassword";
+    	String enteredName = entryBox.getText();
+    	enteredName = enteredName.replace("'", "-");
+    	enteredName = enteredName.replace('"', '-');
+    	
+    	try {
+    		Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+    		Statement stmt = MyConn.createStatement();
+    		
+    		String select = "SELECT wepType, name, attack, element, affinity, slots, rarity FROM WeaponsTable WHERE name = '" + enteredName + "'" ;
+			ResultSet rs = stmt.executeQuery(select);
+			
+			while (rs.next()) {
+				
+				String pickedType = rs.getString("wepType");
+				String pickedWep = rs.getString("name");
+				String pickedAtk = rs.getString("attack");
+				String pickedElm = rs.getString("element");
+				String pickedAffn = rs.getString("affinity");
+				String pickedSlots = rs.getString("slots");
+				String pickedRare = rs.getString("rarity");
+				
+				pickedWep = pickedWep.replace("-", "'");
+				pickedType = pickedType.replace('-', ' ');
+				pickedType = pickedType.toUpperCase();
+				typeLabel.setText(pickedType);
+				nameLabel.setText("Name: " + pickedWep);
+				attackLabel1.setText("Attack: " + pickedAtk);
+				elementLabel.setText("Element: " + pickedElm);
+				affinityLabel1.setText("Affinity: " + pickedAffn);
+				slotsLabel.setText("Slots: " + pickedSlots);
+				rarityLabel.setText("Rarity: " + pickedRare);
+				
+				if (pickedRare.equals("6")) 
+				{
+					augmentBox1.setVisible(true);
+					augmentBox2.setVisible(true);
+					augmentBox3.setVisible(true);
+					calcButton.setVisible(true);
+				}
+				
+				if (pickedRare.equals("7")) 
+				{
+					augmentBox1.setVisible(true);
+					augmentBox2.setVisible(true);
+					calcButton.setVisible(true);
+				}
+				
+				if (pickedRare.equals("8")) 
+				{
+					augmentBox1.setVisible(true);
+					calcButton.setVisible(true);
+				}
+			}
+			
+			
+			
+			rs.close();
+    	}
+    	catch(SQLException e){
+    		e.printStackTrace();
+    	}
     }
     }
 
