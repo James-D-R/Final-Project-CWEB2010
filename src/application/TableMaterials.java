@@ -6,6 +6,7 @@ package application;
 /**
  * @author remjamd
  *
+ *Class for the small materials table on the second tab
  */
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

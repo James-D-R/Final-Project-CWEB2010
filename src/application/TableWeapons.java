@@ -3,6 +3,9 @@ package application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+
+/**@author remjamd
+ * Class for table on main page of the window */
 public class TableWeapons {
 
 	private final SimpleStringProperty colName;

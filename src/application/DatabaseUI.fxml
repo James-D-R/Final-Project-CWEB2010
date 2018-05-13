@@ -87,9 +87,9 @@
                               <Font name="System Bold" size="29.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="augmentBox1" layoutX="709.0" layoutY="93.0" prefWidth="150.0" promptText="Attack" />
-                        <ComboBox fx:id="augmentBox2" layoutX="709.0" layoutY="159.0" prefWidth="150.0" promptText="Attack" />
-                        <ComboBox fx:id="augmentBox3" layoutX="709.0" layoutY="223.0" prefWidth="150.0" promptText="Attack" />
+                        <ComboBox fx:id="augmentBox1" layoutX="709.0" layoutY="93.0" prefWidth="150.0" />
+                        <ComboBox fx:id="augmentBox2" layoutX="709.0" layoutY="159.0" prefWidth="150.0" />
+                        <ComboBox fx:id="augmentBox3" layoutX="709.0" layoutY="223.0" prefWidth="150.0" />
                         <Button fx:id="calcButton" layoutX="778.0" layoutY="287.0" mnemonicParsing="false" onAction="#calculateAtk" text="Calculate" />
                         <Label layoutX="620.0" layoutY="344.0" text="Power After Augmentation:" textFill="WHITE">
                            <font>
@@ -136,9 +136,9 @@
                               <Font name="System Bold Italic" size="19.0" />
                            </font>
                         </Label>
-                        <TableView fx:id="materialTable" layoutX="306.0" layoutY="188.0" prefHeight="313.0" prefWidth="193.0">
+                        <TableView fx:id="materialTable" layoutX="306.0" layoutY="188.0" prefHeight="313.0" prefWidth="236.0">
                           <columns>
-                            <TableColumn fx:id="columnMaterial" prefWidth="187.0" text="Required Material" />
+                            <TableColumn fx:id="columnMaterial" prefWidth="234.0" text="Required Material" />
                           </columns>
                         </TableView>
                         <Label layoutX="306.0" layoutY="143.0" text="Crafting Materials" textFill="WHITE">

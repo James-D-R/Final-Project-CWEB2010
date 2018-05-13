@@ -5,7 +5,8 @@ package application;
 
 /**
  * @author remjamd
- *
+ *IMPORTANT
+ *See line 218 for important note regarding the database
  */
 
 import java.io.IOException;
@@ -132,6 +133,8 @@ public class AppController implements Initializable {
     @FXML
     void calculateAtk(ActionEvent event) {
 
+    	errorLabel.setVisible(false);
+    	calculateAugments();
     }
     
     /**Action Event occurs when the search button on the 
@@ -140,6 +143,8 @@ public class AppController implements Initializable {
     void nameSearch(ActionEvent event) throws IOException {
 
     	errorLabel.setVisible(false);
+    	attackLabel2.setText("Attack:");
+    	affinityLabel2.setText("Affinity:");
     	setLabels();
     	tableSetup();
     }
@@ -210,8 +215,14 @@ public class AppController implements Initializable {
     	augmentBox3.getItems().addAll(options3);
     	
     	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-    	/**un-comment the following section if database needs to be re-created
-    		CAUTION!!! This may take 10+ minutes to complete.*/
+    	
+    	/**un-comment the following section of code if you would like to 
+    	 * re-create the database. This will scrape all of the 
+    	 * webpages, delete the old table, create a new table, and
+    	 * finally populate the new table with the scraped information.
+    	 * CAUTION! This may take 10+ minutes to complete.
+    	 * */
+    	
     	/*try {
     		
     	try {
@@ -254,28 +265,13 @@ public class AppController implements Initializable {
 		//System.out.println(medSlots);
 		int smallSlots = slots1.size();
 		//System.out.println(smallSlots);
-		int noSlots = slotsMinus.size();
+		//int noSlots = slotsMinus.size();
 		//System.out.println(noSlots);
 		
 		int totalSlots = largeSlots + medSlots + smallSlots;
 		String slotsValue = Integer.toString(totalSlots);
 		return slotsValue;
 	}
-    
-    public String checkAffinity(Document wepDoc) 
-    {
-    	String check = "false";
-    	Elements pos = wepDoc.getElementsByClass("text-success");
-    	Elements neg = wepDoc.getElementsByClass("text-danger");
-    	int a = pos.size();
-    	int b = neg.size();
-    	if (a == 1 || b == 1) 
-    	{
-    		check = "true";
-    		
-    	}
-		return check;
-    }
     
     /**Creates and stores all the scraped weapon data to objects using the 
      * Weapon class and returns them to be stored in the database
@@ -307,7 +303,6 @@ public class AppController implements Initializable {
     				String slots = "n/a";
     				String element = " ";
     				String rarity = "n/a";
-    				String check;
         		
     				String wepURL = (link.attr("href"));
     				Document wepDoc = Jsoup.connect(wepURL).get();
@@ -710,7 +705,202 @@ public class AppController implements Initializable {
     			errorLabel.setText("Error. Weapon Not Found.");
     		}
     }
+    
+    /**calculates the new stats of the weapon after
+     * user inputed modifications */
+    public void calculateAugments() {
+    	
+    	try {
+    	//get attack values
+    	String atk = attackLabel1.getText();
+    	atk = atk.replace("Attack: ", "");
+    	atk = atk.replace(" ", "");
+    	String[] attack = atk.split("\\W+");
+    	double bloat = Double.parseDouble(attack[0]);
+    	int raw = Integer.parseInt(attack[1]);
+    	
+    	//get affinity values
+    	String affn = affinityLabel1.getText();
+    	affn = affn.replace("Affinity: ", "");
+    	affn = affn.replace("+", "");
+    	affn = affn.replace("%", "");
+    	int affinity = Integer.parseInt(affn);
+    	
+    	//get rarity value
+    	String rare = rarityLabel.getText();
+    	String rarity = rare.replace("Rarity: ", "");
+    	
+    	//get weapon type
+    	String wType = typeLabel.getText();
+    	wType = wType.toLowerCase();
+    	
+    	//get number of augments to perform
+    	int counter1 = 0;
+    	int counter2 = 0;
+    	
+    	int affnToAdd = 0;
+    	int atkToAdd = 0;
+    	
+    	if (rarity.equals("6")) {
+    		
+    		String aug1 = augmentBox1.getValue();
+    		String aug2 = augmentBox2.getValue();
+    		String aug3 = augmentBox3.getValue();
+    		
+    		if (aug1.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug1.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+    		
+    		if (aug2.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug2.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+    		
+    		if (aug3.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug3.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+ 
+    	}
+    	if (rarity.equals("7")) {
+    		
+    		String aug1 = augmentBox1.getValue();
+    		String aug2 = augmentBox2.getValue();
+    		
+    		if (aug1.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug1.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+    		
+    		if (aug2.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug2.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+    	}
+    	if (rarity.equals("8")) {
+    		
+    		String aug1 = augmentBox1.getValue();
+    		
+    		if (aug1.equals("Attack")) 
+    		{
+    			counter1 = counter1 + 1;
+    		}
+    		if (aug1.equals("Affinity")) 
+    		{
+    			counter2 = counter2 + 1;
+    		}
+    	}
+    	
+    	if (counter2 == 1) {
+    		affnToAdd = 10;
+    	}
+    	if (counter2 == 2) {
+    		affnToAdd = 15;
+    	}
+    	if (counter2 == 3) {
+    		affnToAdd = 20;
+    	}
+    	
+    	atkToAdd = counter1 * 5;
+    	
+    	if (wType.equals("great sword")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 4.8;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("long sword")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 3.3;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("sword") || wType.equals("dual blades")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 1.4;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("hammer")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 5.2;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("hunting horn")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 4.2;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("lance") || wType.equals("gunlance")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 2.3;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("switch axe")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 3.5;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("charge blade")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 3.6;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("insect glaive")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 3.1;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("light bowgun")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 1.3;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("heavy bowgun")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 1.5;
+    		bloat = Math.round(bloat);
+    	}
+    	if (wType.equals("bow")) {
+    		raw = raw + atkToAdd;
+    		bloat = raw * 1.2;
+    		bloat = Math.round(bloat);
+    	}
+    	
+    	//set labels
+    	affinity = affinity + affnToAdd;
+    	String affnToEnter = Integer.toString(affinity);
+    	affnToEnter = affnToEnter + "%";
+    	
+    	int bloatEnter = (int)bloat;
+    	attackLabel2.setText("Attack: " + bloatEnter + " | " + raw);
+    	affinityLabel2.setText("Affinity: " + affnToEnter);
+    	}
+    	catch(Exception e) {
+    		System.out.println("Please select an item for each box.");
+    		errorLabel.setVisible(true);
+    		errorLabel.setText("Please select an item for each box.");
+    	}
     }
+}
     
     
 

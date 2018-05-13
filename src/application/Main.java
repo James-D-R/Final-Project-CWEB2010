@@ -20,12 +20,9 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		try {
 			
-			//BorderPane root = new BorderPane();
-			//Scene scene = new Scene(root,400,400)
 			FXMLLoader fxmlLoader = new FXMLLoader (getClass().getResource("DatabaseUI.fxml"));
 			fxmlLoader.setController(new AppController());
 			Parent root = fxmlLoader.load();
-			//Parent root = FXMLLoader.load(getClass().getResource("DatabaseUI.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("DatabaseUI.fxml").toExternalForm());
 			stage.setScene(scene);
