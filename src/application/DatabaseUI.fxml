@@ -37,43 +37,25 @@
                               <TableColumn fx:id="columnRarity" prefWidth="66.0" text="Rarity" />
                           </columns>
                         </TableView>
-                        <ComboBox fx:id="WeaponBox" layoutX="14.0" layoutY="97.0" prefHeight="31.0" prefWidth="175.0" promptText="Weapon" />
-                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="172.0" prefHeight="31.0" prefWidth="175.0" promptText="Element" />
-                        <ComboBox fx:id="AffinityBox" layoutX="14.0" layoutY="243.0" prefHeight="31.0" prefWidth="175.0" promptText="Affinity" />
-                        <ComboBox fx:id="SlotsBox" layoutX="14.0" layoutY="308.0" prefHeight="31.0" prefWidth="175.0" promptText="Slots" />
-                        <ComboBox fx:id="RarityBox" layoutX="14.0" layoutY="377.0" prefHeight="31.0" prefWidth="175.0" promptText="Rarity" />
-                        <Button fx:id="searchButton" layoutX="69.0" layoutY="449.0" mnemonicParsing="false" onAction="#clicked" text="Search" />
+                        <ComboBox fx:id="WeaponBox" layoutX="14.0" layoutY="126.0" prefHeight="31.0" prefWidth="175.0" promptText="Great Sword" />
+                        <ComboBox fx:id="ElementBox" layoutX="14.0" layoutY="209.0" prefHeight="31.0" prefWidth="175.0" promptText="Element" />
+                        <Button fx:id="searchButton" layoutX="69.0" layoutY="298.0" mnemonicParsing="false" onAction="#clicked" text="Search" />
                         <Label layoutX="206.0" layoutY="22.0" prefHeight="35.0" prefWidth="507.0" text="Monster Hunter World: Weapons Database" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Label layoutX="18.0" layoutY="76.0" text="Weapon Type:" textFill="WHITE">
+                        <Label layoutX="18.0" layoutY="94.0" text="Weapon Type:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="14.0" layoutY="151.0" text="Element:" textFill="WHITE">
+                        <Label layoutX="9.0" layoutY="181.0" text="Element:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="16.0" layoutY="222.0" text="Affinity:" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="16.0" layoutY="287.0" text="Slots:" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="16.0" layoutY="356.0" text="Rarity:" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="infoLabel" layoutX="40.0" layoutY="494.0" prefHeight="21.0" prefWidth="148.0" text="Please wait..." textFill="WHITE">
+                        <Label fx:id="infoLabel" layoutX="40.0" layoutY="345.0" prefHeight="21.0" prefWidth="148.0" text="Please wait..." textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

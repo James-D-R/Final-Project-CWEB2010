@@ -62,15 +62,6 @@ public class AppController implements Initializable {
 
     @FXML
     private ComboBox<String> ElementBox;
-
-    @FXML
-    private ComboBox<String> RarityBox;
-
-    @FXML
-    private ComboBox<String> AffinityBox;
-
-    @FXML
-    private ComboBox<String> SlotsBox;
     
     @FXML
     private Label infoLabel;
@@ -78,11 +69,11 @@ public class AppController implements Initializable {
     @FXML
     private Button searchButton;
 
+    
+    
     //Action Event to fill tables
     @FXML
-    void clicked(ActionEvent event) throws IOException{
-
-    	infoLabel.setVisible(true);
+    void clicked(ActionEvent event) throws IOException, SQLException{
     	
     	//Initialize columns
     	columnName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
@@ -92,12 +83,10 @@ public class AppController implements Initializable {
     	columnSlots.setCellValueFactory(cellData -> cellData.getValue().slotsProperty());
     	columnRarity.setCellValueFactory(cellData -> cellData.getValue().rarityProperty());
     	
-    	//ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
+    	ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
+    	sample = searchDatabase();
     	
-    	
-    	
-    	
-        //dataTable.setItems(sample);
+    	dataTable.setItems(sample);
     }
 
     //Initialize window
@@ -139,72 +128,29 @@ public class AppController implements Initializable {
     		    		"Sleep",
     		    		"Blast");
 		
-		ObservableList<String> options3 = 
-    		    FXCollections.observableArrayList(" ","1","2","3","4","5","6","7","8");
-		
-		ObservableList<String> options4 = 
-    		    FXCollections.observableArrayList("No Affinity","+","-");
-		
-		ObservableList<String> options5 = 
-    		    FXCollections.observableArrayList("0","1","2","3");
 		
     	WeaponBox.getItems().addAll(options1);
     	ElementBox.getItems().addAll(options2);
-    	RarityBox.getItems().addAll(options3);
-    	AffinityBox.getItems().addAll(options4);
-    	SlotsBox.getItems().addAll(options5);
+    	
     	
     	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-    	/*try {
+    	try {
 			weapons = createObjects();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	System.out.println(weapons.get(1).name);*/
-    	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
-    	String USERNAME = "jdremer";
-    	String PASSWORD = "testpassword";
+    	//System.out.println(weapons.get(1).name);
+    	
+    	//Insert scraped information to database
     	try {
-			Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-			System.out.println("Connected");
-			
-			Statement drop_stmt = MyConn.createStatement();
-			String drop = "DROP TABLE WeaponsTable";
-			drop_stmt.executeUpdate(drop);
-			System.out.println("Deleted table in given database");
-			
-			Statement stmt = MyConn.createStatement();
-			String create = "CREATE TABLE WeaponsTable" +
-                 	" (wepType VARCHAR(255) not NULL, " + 
-                 	" name VARCHAR(255), " +
-                 	" attack VARCHAR(255)," +
-                 	" element VARCHAR(255)," +
-                 	" affinity VARCHAR(255)," +
-                 	" slots VARCHAR(255)," +
-                 	" rarity VARCHAR(255)," +
-                 	" PRIMARY KEY ( wepType ))";
-			stmt.executeUpdate(create);
-			System.out.println("Created table in the given database.");
-			
-			String wepType = "Long Sword";
-			String name = "Iron Katana I";
-			String attack = "250 | 80";
-			String element = "n/a";
-			String affinity = "0%";
-			String slots = "0";
-			String rarity = "1";
-			
-			String insert = "INSERT INTO WeaponsTable " +
-				"VALUES ('"+wepType+"' , '"+name+"' , '"+attack+"' , '"+element+"' , '"+affinity+"' , '"+slots+"' , '"+rarity+"' )";
-			stmt.executeUpdate(insert);
-			System.out.println("Inserted records to the given database");
-			
+			createDatabase(weapons);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	
 	
 	//Methods
@@ -254,8 +200,6 @@ public class AppController implements Initializable {
     		
     		//create url
     		String selectedWep = choices[i];
-    		//selectedWep = selectedWep.toLowerCase();
-    		//selectedWep = selectedWep.replace(' ', '-');
     		String url = "https://mhworld.kiranico.com/" + selectedWep;
     	
     		//Connect using Jsoup
@@ -280,6 +224,8 @@ public class AppController implements Initializable {
         		
     				String wepType = selectedWep;
     				String name = link.text();
+    				name = name.replace("'","-");
+    				name = name.replace('"', '-');
     				attack = stats.first().text();
     				slots = findSlots(wepDoc); //method
     				rarity = stats.last().text();
@@ -354,7 +300,7 @@ public class AppController implements Initializable {
 	        			}
 	        		}
 	        		
-	        		else 
+	        		if (selectedWep.equals("great-sword") || selectedWep.equals("long-sword") || selectedWep.equals("sword") || selectedWep.equals("dual-blades") || selectedWep.equals("hammer") || selectedWep.equals("lance"))
 	        		{
 	        			if(total == 3) 
 	            		{
@@ -397,4 +343,117 @@ public class AppController implements Initializable {
     	}
     	return weapons;
     }
-}
+    
+    
+    
+    public void createDatabase(ArrayList<Weapon> weapons) throws SQLException{
+    	
+    	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
+    	String USERNAME = "jdremer";
+    	String PASSWORD = "testpassword";
+    	
+    	try {
+			Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+			System.out.println("Connected");
+			
+			//delete previous table
+			Statement drop_stmt = MyConn.createStatement();
+			String drop = "DROP TABLE WeaponsTable";
+			drop_stmt.executeUpdate(drop);
+			System.out.println("Deleted table in given database");
+			
+			//create new table
+			Statement stmt = MyConn.createStatement();
+			String create = "CREATE TABLE WeaponsTable" +
+                 	" (number INTEGER not NULL, " + 
+                 	" wepType VARCHAR(255), " +
+                 	" name VARCHAR(255), " +
+                 	" attack VARCHAR(255)," +
+                 	" element VARCHAR(255)," +
+                 	" affinity VARCHAR(255)," +
+                 	" slots VARCHAR(255)," +
+                 	" rarity VARCHAR(255)," +
+                 	" PRIMARY KEY ( number ))";
+			stmt.executeUpdate(create);
+			System.out.println("Created table in the given database.");
+			
+			//write data to the new table
+			for (int x = 0; x < weapons.size(); x++) {
+				
+				int number = x;
+				String wepType = weapons.get(x).wepType;
+				String name = weapons.get(x).name;
+				String attack = weapons.get(x).attack;
+				String element = weapons.get(x).element;
+				String affinity = weapons.get(x).affinity;
+				String slots = weapons.get(x).slots;
+				String rarity = weapons.get(x).rarity;
+				
+				String insert = "INSERT INTO WeaponsTable " +
+						"VALUES ('"+number+"' , '"+wepType+"' , '"+name+"' , '"+attack+"' , '"+element+"' , '"+affinity+"' , '"+slots+"' , '"+rarity+"' )";
+					stmt.executeUpdate(insert);
+			}
+			
+			System.out.println("Inserted records to the database.");
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();}
+    }
+    
+    
+    
+    public ObservableList<TableWeapons> searchDatabase() throws SQLException{
+    	
+    	ObservableList<TableWeapons> sample = FXCollections.observableArrayList();
+    	
+    	String DB_URL = "jdbc:mysql://db4free.net:3306/mhw_weapons";
+    	String USERNAME = "jdremer";
+    	String PASSWORD = "testpassword";
+    	
+    	try {
+    		Connection MyConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+    		Statement stmt = MyConn.createStatement();
+    		
+    		String wepChoice = WeaponBox.getValue();
+    		wepChoice = wepChoice.toLowerCase();
+    		wepChoice = wepChoice.replace(' ', '-');
+    		
+    		String select = "SELECT wepType, name, attack, element, affinity, slots, rarity FROM WeaponsTable WHERE wepType = '" + wepChoice + "'" ;
+			ResultSet rs = stmt.executeQuery(select);
+			
+			while (rs.next()) {
+				
+				String pickedWep = rs.getString("name");
+				String pickedAtk = rs.getString("attack");
+				String pickedElm = rs.getString("element");
+				String pickedAffn = rs.getString("affinity");
+				String pickedSlots = rs.getString("slots");
+				String pickedRare = rs.getString("rarity");
+				
+				sample.add(new TableWeapons(pickedWep, pickedAtk, pickedElm, pickedAffn, pickedSlots, pickedRare));
+			}
+			
+			rs.close();
+    	}
+    	catch(SQLException e){
+    		e.printStackTrace();
+    	}
+    	
+    	
+    	return sample;
+    }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
